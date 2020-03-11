@@ -1,4 +1,4 @@
-#include "../freemint/sys/xdd/whlmoose/whlmoose.h"
+#include "../freemint/xaaes/src.km/adi/moose.h" /* is now part of xaaes not mint anymore*/
 
 extern int mouseDevHandle;
 

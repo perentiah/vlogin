@@ -53,9 +53,6 @@ int main()
 	 DEBUG("Starting init: ");
 	InitTinyAES();
 	 DEBUG("Ok\n");
-
-	// AlertDialog("Test of new multiline dialog", "Three rings for the Elven-kings under the sky,\nSeven for the Dwarf-lords in their halls of stone,\nNine for Mortal Men doomed to die,\nOne for the Dark Lord on his dark throne\nIn the Land of Mordor where the Shadows lie.", "Wow that's good", "Desive dlouhej text v tlacitku", 0);
-
 	 DEBUG("Creating menu\n");
 	menuPtr = BuildMenu();
 
@@ -162,9 +159,8 @@ void *BuildLoginDialog(void *menuPtr)
 	 DEBUG("BuildWelcomeString\n");
 	BuildWelcomeString(string);
 	 DEBUG("Done\n");
-
 	 DEBUG("Attaching dialog items: ");
-	AttachBox(dialogPtr, box, NULL);
+	AttachBox(dialogPtr, box, ""); /* NULL isn't handled correctly */
 	AttachString(dialogPtr, string0, string);
 	AttachString(dialogPtr, string1, LOGIN);
 	AttachString(dialogPtr, string2, PASSWD);

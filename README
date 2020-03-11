@@ -13,11 +13,13 @@ in that case!
 In next step copy vlogin.conf to '/etc' and modify its entries to fit your
 system.
 
-For mouse support instal moose.xdd to your mint folder.
+For mouse support install moose.xdd to your mint folder.
 Currently there are two binary incompatible versions of moose.xdd!
 If mouse don't respond correctly your moose is too old, in that case
 compile new one from current freemint cvs, or compile vlogin against
 older version of moose from cvs.
+
+For now I have disabled moose support and enabled MOUSE_VECTOR. This should work at least under Aranym
 
 Thats it, now reboot and enjoy!
 
@@ -26,12 +28,11 @@ vlogin.conf example:
 # sample vdi login config, this file belongs to /etc/
 
 # shell menu item		path to shell					arguments
-"XaAes 0.970"			/c/gemsys/xaaes/xaaes.prg	-fvideo 24
-"nAes"					/c/gemsys/n_aes/n_aes030.sys
-MyAES						/c/gemsys/myaes/myaes2.prg
+"XaAes"		/c/mint/1-19-00d/xaaes/xaloader.prg
+#"nAes"		/c/gemsys/n_aes/n_aes030.sys
 -
-"XaAes 0.990 (km)"	/c/xaaes.km/load.prg
--
+#MyAES						/c/gemsys/myaes/myaes.prg
+#-
 sh							/bin/sh
 bash						/bin/bash
 //----------------------------------------------

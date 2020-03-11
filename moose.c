@@ -28,6 +28,7 @@
 #include <gem.h>
 
 #include "moose.h"
+#include "debug.h"
 
 int mouseDevHandle = 0;
 
@@ -108,10 +109,12 @@ moose_init(short phandle)
 		if (vecs.whlv)
 		{
 			vex_wheelv(phandle, vecs.whlv, (void **)(&svwhlv));
+			DEBUG("Wheel support present\n");
 			// fdisplay(loghandle, true, "Wheel support present\n");
 		}
 		else {
 			// fdisplay(loghandle, true, "No wheel support!!\n");
+			DEBUG("No Wheel support present\n");
 		}
 	}
 

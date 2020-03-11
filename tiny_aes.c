@@ -14,14 +14,18 @@
 #include "vdi_it.h"
 #include "debug.h"
 
+/* bkr
+  MOUSE_USE_MOOSE does not work for new mint/xaaes currently
+  meanwhile MOUSE_VECTOR is used
+ */
 
-// #define MOUSE_VECTOR
-#define MOUSE_USE_MOOSE
+#define MOUSE_VECTOR
+//#define MOUSE_USE_MOOSE
 #define MOUSE_DEVICE_NAME "/dev/mouse"
 
 
 #if defined(MOUSE_USE_MOOSE)
-# include "moose.h"
+#include "moose.h"
 #endif
 
 
@@ -231,10 +235,8 @@ void InitTinyAES()
 	InitColors();
 	
 	InitMouseVector();
-
 	DrawDesktop();
-
-	v_show_c(handle, 0);
+ 	v_show_c(handle, 0);
 }
 
 void ExitTinyAES()
@@ -323,7 +325,7 @@ short AlertDialog(char *title, char *message, char *button, ...)
 	boxPosition.w = boxPosition.x + maxLineWidth + 16;
 	boxPosition.h = boxPosition.y + (lineCount * 20) + 12;
 
-	AttachBox(dialog, boxPosition, NULL);
+	AttachBox(dialog, boxPosition, "");  /* bkr - NULL isn't handled correctly */
 
 	for (token  = strtok(string, "\n"); token; token = strtok(0, "\n"))
 	{
@@ -651,7 +653,7 @@ void DrawDesktop()
 	else if (vdiInfo[2] >= 15)
 	{
 		sRect deskRect = {0, 0, vdiInfo[0], vdiInfo[1] + 1};
-		short rgbE[3] = {100, 200, 500};
+		short rgbE[3] = {600, 600, 500};
 		short rgbB[3] = {0, 0, 200};
 
 		vs_color(handle, 221, rgbE);
@@ -667,7 +669,6 @@ void DrawButton(void *dialogPtr, sRect button_xy, int flag, char *label, int typ
 	sList 		*selectedDialog = ((sDialogObject *)element->data)->dialog;
 	sList		*list = (sList *)dialogPtr;
 	sGraficObject	*object;
-
 	char *string;
 
 	short rgbB[3];
@@ -677,6 +678,7 @@ void DrawButton(void *dialogPtr, sRect button_xy, int flag, char *label, int typ
 	short labelLength = strlen(label);
 
 	element = (sElement *)list->first;
+
 	object = (sGraficObject *)element->data;
 	
 	button_xy.x+= object->coordinates.x;
@@ -710,7 +712,8 @@ void DrawButton(void *dialogPtr, sRect button_xy, int flag, char *label, int typ
 		}
 	}
 
-	vs_color(handle, 221, rgbE); vs_color(handle, 222, rgbB);
+	vs_color(handle, 221, rgbE);
+	vs_color(handle, 222, rgbB);
 	
 	if (((flag >> 2) & 1) != 1 )
 		PaintGradient(handle, button_xy, rgbB, rgbE);
@@ -1061,7 +1064,7 @@ void *CreateDialog(sRect dial_xy, char *label)
 	v_hide_c(handle);
 
 	dialogBody->type = TA_DIALOG;
-	dialogBody->string = NULL;
+	dialogBody->string = "";
 	dialogBody->coordinates = dial_xy;
 	dialogBody->info = NULL;
 
@@ -1115,6 +1118,7 @@ void RedrawDialog(void *dialog)
 	for (i = 0; i < ((sList *)dialog)->itemCount; i++)
 	{
 		DEBUG("Item: %d\n", i);
+		DEBUG("Type: %d\n", object->type);
 		switch (object->type)
 		{
 			case TA_DIALOG: // dialog
@@ -1122,9 +1126,7 @@ void RedrawDialog(void *dialog)
 				dialRect.y = 0;
 				dialRect.w = object->coordinates.w - object->coordinates.x;
 				dialRect.h = object->coordinates.h - object->coordinates.y;
-
 				DrawButton(dialog, dialRect, 0, object->string, object->type);
-			
 				break;
 			case TA_MOVER: // mover
 				DrawButton(dialog, object->coordinates, (int)object->info, object->string, object->type);
@@ -1612,8 +1614,10 @@ short HandleMouseDown(short mouseX, short mouseY)
 		{
 			if (PtInRect(mouseX, mouseY, object->coordinates))
 			{
-				DrawButton(selectedDialog, object->coordinates, (int)object->info += BUTTON_SELECTED, object->string, object->type);
-
+				// DrawButton(selectedDialog, object->coordinates, (int)object->info + BUTTON_SELECTED, object->string, object->type);
+				// DrawButton(selectedDialog, object->coordinates, (int)object->info += BUTTON_SELECTED, object->string, object->type);
+                //(int)object->info = (int)object->info + BUTTON_SELECTED;
+				DrawButton(selectedDialog, object->coordinates, (int)object->info + BUTTON_SELECTED, object->string, object->type);
 				break;
 			}
 		}
@@ -1622,7 +1626,7 @@ short HandleMouseDown(short mouseX, short mouseY)
 		{
 			if (PtInRect(mouseX, mouseY, object->coordinates) && ((((int)object->info) >> 3) & 1) != 1)
 			{
-				DrawButton(selectedDialog, object->coordinates, (int)object->info += BUTTON_SELECTED, object->string, object->type);
+				DrawButton(selectedDialog, object->coordinates, (int)object->info + BUTTON_SELECTED, object->string, object->type);
 
 				break;
 			}
@@ -1710,7 +1714,7 @@ short HandleMouseUp(short mouseX, short mouseY)
 	{
 		if (topDialogObject->selectedObject->type == TA_MOVER || topDialogObject->selectedObject->type == TA_BUTTON)
 		{
-			DrawButton(selectedDialog, topDialogObject->selectedObject->coordinates, (int)topDialogObject->selectedObject->info -= BUTTON_SELECTED, topDialogObject->selectedObject->string, topDialogObject->selectedObject->type);
+			DrawButton(selectedDialog, topDialogObject->selectedObject->coordinates, (int)topDialogObject->selectedObject->info - BUTTON_SELECTED, topDialogObject->selectedObject->string, topDialogObject->selectedObject->type);
 		}
 		else if (topDialogObject->selectedObject->type == TA_COMBO_BOX && topDialogObject->selectedObject != topDialogObject->activatedObject)
 		{

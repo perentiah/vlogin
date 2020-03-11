@@ -1,7 +1,14 @@
-# setup crosscompile environment
 #
-# include ~/projects/mint/freemint/CONFIGVARS
-# CFLAGS += -I../../gemdev/lib/windom.mt/include $(GENERAL)
+# Makefile for vlogin
+#
+
+top_srcdir = .
+
+installdir = /opt/GEM/vlogin
+
+default: help
+
+include $(top_srcdir)/CONFIGVARS
 
 #CFLAGS += -ggdb -O0 -Wall
 CFLAGS += -g -O2 -m68020-60 -Wall
@@ -13,6 +20,19 @@ LFLAGS = -lgem
 
 TARGET = vlogin
 
+help:
+	@echo '#'
+	@echo '# targets:'
+	@echo '# --------'
+	@echo '# - all'
+	@echo '#'
+	@echo '# - install'
+	@echo '# - strip'
+	@echo '# - clean'
+	@echo '# - help'
+	@echo '#'
+
+    
 all: $(TARGET)
 
 $(TARGET): $(OBJS) 
@@ -25,4 +45,4 @@ clean:
 	rm -rf $(TARGET) *.o
 
 install:
-	cp $(TARGET) /sbin/
+	cp $(TARGET) $(installdir)/
